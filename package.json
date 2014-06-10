@@ -17,9 +17,8 @@
   "author": "Sho Hashimoto <hashimoto@shokai.org>",
   "license": "MIT",
   "devDependencies": {
-    "coffee-script": "^1.7.1",
-    "coffee-errors": "*",
     "coffee-script": "*",
+    "coffee-errors": "*",
     "async": "*",
     "mocha": "*",
     "grunt": "*",
@@ -38,5 +37,13 @@
   },
   "directories": {
     "test": "tests"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/shokai/blendmicro-node.git"
+  },
+  "bugs": {
+    "url": "https://github.com/shokai/blendmicro-node/issues"
+  },
+  "homepage": "https://github.com/shokai/blendmicro-node"
 }
