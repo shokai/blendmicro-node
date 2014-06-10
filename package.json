@@ -1,0 +1,42 @@
+{
+  "name": "blendmicro",
+  "private": true,
+  "version": "0.0.0",
+  "description": "BlendMicro Node Lib",
+  "main": "lib/blendmicro.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Arduino",
+    "Firmata",
+    "Bluetooth",
+    "BLE",
+    "BlendMicro"
+  ],
+  "author": "Sho Hashimoto <hashimoto@shokai.org>",
+  "license": "MIT",
+  "devDependencies": {
+    "coffee-script": "^1.7.1",
+    "coffee-errors": "*",
+    "coffee-script": "*",
+    "async": "*",
+    "mocha": "*",
+    "grunt": "*",
+    "grunt-cli": "*",
+    "grunt-simple-mocha": "*",
+    "grunt-notify": "*",
+    "grunt-contrib-coffee": "*",
+    "grunt-coffeelint": "git+https://github.com/geta6/grunt-coffeelint",
+    "grunt-contrib-watch": "git+https://github.com/gruntjs/grunt-contrib-watch"
+  },
+  "dependencies": {
+    "debug": "*",
+    "eventemitter2": "*",
+    "lodash": "*",
+    "noble": "*"
+  },
+  "directories": {
+    "test": "tests"
+  }
+}
