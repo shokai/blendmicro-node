@@ -12,10 +12,14 @@ module.exports = class BlendMicro extends events.EventEmitter2
 
   constructor: (@name = 'BlendMicro') ->
 
-    noble.on 'discover', (@peripheral) =>
-      if @peripheral.advertisement.localName isnt @name
+    noble.on 'discover', (peripheral) =>
+      if peripheral.advertisement.localName isnt @name
         return
+      @peripheral = peripheral
       debug 'found peripheral'
+
+      @__defineGetter__ 'state', =>
+        return @peripheral?.state
 
       @peripheral.connect =>
 
