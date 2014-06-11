@@ -4,8 +4,8 @@ Node.js module for [BlendMicro](http://redbearlab.com/blendmicro/) with BLE.
 
     Node.js <---(BLE)---> BlendMicro
 
-- using [noble npm](http://npmjs.org/package/noble) as BLE wrapper.
-- [serialport npm](https://www.npmjs.org/package/serialport) like API for blendmicro
+- using [noble npm](http://npmjs.org/package/noble) as BLE wrapper
+- [serialport npm](https://www.npmjs.org/package/serialport) like API
 
 
 Install
@@ -27,7 +27,7 @@ Usage
 
 blendmicro side
 
-```arduino
+```c
 #include <SPI.h>
 #include <boards.h>
 #include <RBL_nRF8001.h>
