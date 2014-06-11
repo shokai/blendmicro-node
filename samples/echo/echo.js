@@ -1,0 +1,29 @@
+var BlendMicro = require(__dirname+'/../../');
+// var BlendMicro = require('blendmicro');
+
+var bm = new BlendMicro("BlendMicro");
+
+bm.on('open', function(){
+  console.log("open!!");
+
+  // read data
+  bm.on("data", function(data){
+    console.log(data.toString());
+  });
+
+});
+
+bm.on('close', function(){
+  console.log('close!!');
+});
+
+process.stdin.setEncoding("utf8");
+
+// write data from STDIN
+process.stdin.on("readable", function(){
+  console.log(bm.state);
+  var chunk = process.stdin.read();
+  if(chunk == null) return;
+  chunk = chunk.toString().replace(/[\r\n]/g, '');
+  bm.write(chunk);
+});
