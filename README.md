@@ -56,23 +56,24 @@ var bm = new BlendMicro();
 ```
 
 
-### Read/Write
+### Read
 
 ```javascript
 bm.on('open', function(){
   console.log("open!!");
 
-  // read data
   bm.on("data", function(data){
     console.log(data.toString());
   });
-
-  // write data
-  setInterval(function(){
-    bm.write("hello");
-  });
-
 });
+```
+
+### Write
+
+```javascript
+bm.write("hello");
+
+bm.write( new Buffer([1,2,3]) );
 ```
 
 ### Close
