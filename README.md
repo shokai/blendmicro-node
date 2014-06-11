@@ -7,6 +7,11 @@ Node.js module for [BlendMicro](http://redbearlab.com/blendmicro/) with BLE.
 - using [noble npm](http://npmjs.org/package/noble) as BLE wrapper
 - [serialport npm](https://www.npmjs.org/package/serialport) like API
 
+sites
+
+- https://www.npmjs.org/package/blendmicro
+- https://github.com/shokai/blendmicro-node
+
 
 Install
 -------
