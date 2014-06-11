@@ -21,7 +21,6 @@ process.stdin.setEncoding("utf8");
 
 // write data from STDIN
 process.stdin.on("readable", function(){
-  console.log(bm.state);
   var chunk = process.stdin.read();
   if(chunk == null) return;
   chunk = chunk.toString().replace(/[\r\n]/g, '');
