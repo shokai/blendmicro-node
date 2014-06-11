@@ -1,7 +1,7 @@
 {
   "name": "blendmicro",
-  "private": true,
-  "version": "0.0.0",
+  "private": false,
+  "version": "0.0.1",
   "description": "BlendMicro Node Lib",
   "main": "lib/blendmicro.js",
   "scripts": {
