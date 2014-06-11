@@ -1,16 +1,18 @@
 var BlendMicro = require(__dirname+'/../');
 // var BlendMicro = require('blendmicro');
 
-blendmicro = new BlendMicro("BlendMicro");
+var bm = new BlendMicro("BlendMicro");
 
-blendmicro.on('open', function(){
+bm.on('open', function(){
   console.log("open!!");
 
+  // write data
   setInterval(function(){
-    blendmicro.write("test"); // write data
+    bm.write("test");
   }, 500);
 
-  blendmicro.on("data", function(data){ // read data
+  // read data
+  bm.on("data", function(data){
     console.log(data.toString());
   });
 
