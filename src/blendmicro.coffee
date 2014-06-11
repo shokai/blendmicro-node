@@ -26,6 +26,9 @@ module.exports = class BlendMicro extends events.EventEmitter2
         ## trap SIGNALs
         for signal in ['SIGINT', 'SIGHUP', 'SIGTERM']
           process.on signal, =>
+            if @peripheral.state is 'disconnected'
+              process.exit 1
+              return
             @peripheral.disconnect ->
               process.exit 1
             setTimeout ->
@@ -60,7 +63,8 @@ module.exports = class BlendMicro extends events.EventEmitter2
 
     return @
 
-  close: ->
+  close: (callback) ->
+    @peripheral.disconnect callback
 
   write: (data) ->
     return unless @tx
