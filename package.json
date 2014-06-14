@@ -7,6 +7,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "bin": {
+    "blendmicro": "./bin/blendmicro"
+  },
   "keywords": [
     "Arduino",
     "Firmata",
@@ -17,7 +20,6 @@
   "author": "Sho Hashimoto <hashimoto@shokai.org>",
   "license": "MIT",
   "devDependencies": {
-    "coffee-script": "*",
     "coffee-errors": "*",
     "async": "*",
     "mocha": "*",
@@ -30,10 +32,12 @@
     "grunt-contrib-watch": "git+https://github.com/gruntjs/grunt-contrib-watch"
   },
   "dependencies": {
+    "coffee-script": "*",
     "debug": "*",
     "eventemitter2": "*",
     "lodash": "*",
-    "noble": "*"
+    "noble": "*",
+    "optparse": "*"
   },
   "directories": {
     "test": "tests"
