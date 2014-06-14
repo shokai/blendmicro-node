@@ -65,7 +65,6 @@ module.exports = class BlendMicro extends events.EventEmitter2
     @open()
 
   open: ->
-    debug @peripheral?.state
     if !@peripheral or @peripheral.state is 'disconnected'
       noble.startScanning()
     return @
