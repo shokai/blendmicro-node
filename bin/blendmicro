@@ -6,7 +6,7 @@ util     = require 'util'
 parser = new optparse.OptionParser [
   ['-h', '--help',     'show help']
   ['-l', '--list',     'list devices']
-  ['-t', '--terminal', 'BLE terminal mode']
+  ['-t', '--terminal [DEVICE_NAME]', 'BLE terminal mode']
 ]
 
 unless process.argv[2]
@@ -19,17 +19,18 @@ parser.on 'help', ->
   #{package_json.name} v#{package_json.version}
 
   Usage:
-    % #{package_json.name} --list
-    % #{package_json.name} --terminal BlendMicro
+    % #{package_json.name} -l
+    % #{package_json.name} -t BlendMicro
   """
-  
+
   console.log parser.toString()
   process.exit 0
 
+
 parser.on 'list', ->
   console.log 'scanning devices..'
+
   noble = require 'noble'
-  sys   = require 'sys'
   noble.on 'discover', (peripheral) ->
     console.log peripheral.advertisement.localName
     for k,v of peripheral.advertisement
@@ -37,8 +38,34 @@ parser.on 'list', ->
 
   noble.startScanning()
 
-parser.on 'terminal', (device_name) ->
+
+parser.on 'terminal', (opt, device_name) ->
+  unless device_name
+    console.log "missing device name"
+    return
+
   BlendMicro = require "#{__dirname}/../"
+  bm = new BlendMicro device_name
+  encoding = 'utf8'
+
+  bm.on 'open', ->
+    console.log "<open #{device_name}>"
+
+  bm.on 'data', (data) ->
+    console.log data.toString(encoding)
+
+  bm.on 'close', ->
+    console.log "<close #{device_name}>"
+    process.exit 1
+
+  process.stdin.setEncoding encoding
+
+  process.stdin.on 'readable', ->
+    chunk = process.stdin.read()
+    if chunk is null
+      return
+    line = chunk.toString().replace /[\r\n]/g, ''
+    bm.write line
 
 
 parser.parse process.argv
