@@ -19,6 +19,14 @@ Install
     % npm install blendmicro
 
 
+BLE Terminal
+------------
+
+    % blendmicro -help
+    % blendmicro -list
+    % blendmicro -terminal [DEVICE_NAME]
+
+
 Samples
 -------
 
