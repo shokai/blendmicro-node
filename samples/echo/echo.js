@@ -9,6 +9,9 @@ bm.on('open', function(){
   // read data
   bm.on("data", function(data){
     console.log(data.toString());
+    bm.updateRssi(function(err, rssi){
+      console.log("rssi:"+rssi);
+    });
   });
 
 });

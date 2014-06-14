@@ -77,3 +77,6 @@ module.exports = class BlendMicro extends events.EventEmitter2
     unless data instanceof Buffer
       data = new Buffer data
     @tx.write data
+
+  updateRssi: (callback) ->
+    @peripheral?.updateRssi callback
