@@ -24,7 +24,7 @@ BLE Terminal
 
     % blendmicro -help
     % blendmicro -list
-    % blendmicro -terminal [DEVICE_NAME]
+    % blendmicro -term [DEVICE_NAME]
 
 
 Samples

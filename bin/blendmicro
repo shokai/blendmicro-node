@@ -4,9 +4,9 @@ optparse = require 'optparse'
 util     = require 'util'
 
 parser = new optparse.OptionParser [
-  ['-h', '--help',     'show help']
-  ['-l', '--list',     'list devices']
-  ['-t', '--terminal [DEVICE_NAME]', 'BLE terminal mode']
+  ['-h', '--help', 'show help']
+  ['--list', 'list devices']
+  ['--term [DEVICE_NAME]', 'BLE terminal mode']
 ]
 
 unless process.argv[2]
@@ -19,8 +19,8 @@ parser.on 'help', ->
   #{package_json.name} v#{package_json.version}
 
   Usage:
-    % #{package_json.name} -l
-    % #{package_json.name} -t BlendMicro
+    % #{package_json.name} --list
+    % #{package_json.name} --term BlendMicro
   """
 
   console.log parser.toString()
@@ -39,7 +39,7 @@ parser.on 'list', ->
   noble.startScanning()
 
 
-parser.on 'terminal', (opt, device_name) ->
+parser.on 'term', (opt, device_name) ->
   unless device_name
     console.log "missing device name"
     return
