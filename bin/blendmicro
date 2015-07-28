@@ -36,7 +36,12 @@ parser.on 'list', ->
     for k,v of peripheral.advertisement
       console.log "  #{k}\t#{util.inspect v}"
 
-  noble.startScanning()
+  noble.on 'stateChange', (state) ->
+    if state is 'poweredOn'
+      noble.startScanning()
+    else
+      noble.stopScanning()
+
 
 
 parser.on 'term', (opt, device_name) ->

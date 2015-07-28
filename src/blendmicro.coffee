@@ -15,6 +15,12 @@ module.exports = class BlendMicro extends events.EventEmitter2
     @__defineGetter__ 'state', =>
       @peripheral?.state or 'discover'
 
+    noble.on 'stateChange', (state) ->
+      if state is 'poweredOn'
+        noble.startScanning()
+      else
+        noble.stopScanning()
+
     noble.on 'discover', (peripheral) =>
       if peripheral.advertisement.localName isnt @name
         return
@@ -61,13 +67,6 @@ module.exports = class BlendMicro extends events.EventEmitter2
 
     @once 'open', ->
       noble.stopScanning()
-
-    @open()
-
-  open: ->
-    if !@peripheral or @peripheral.state is 'disconnected'
-      noble.startScanning()
-    return @
 
   close: (callback) ->
     @peripheral.disconnect callback
