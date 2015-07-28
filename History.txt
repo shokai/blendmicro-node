@@ -1,3 +1,7 @@
+=== 0.1.2 2015-07-29
+
+* fixed for Mac OSX Yosemite
+
 === 0.1.1 2014-06-15
 
 * fix blendmicro command opts
