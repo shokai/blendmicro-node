@@ -63,8 +63,16 @@ module.exports = class BlendMicro extends events.EventEmitter2
                 debug err if err
 
       @peripheral.on 'disconnect', =>
+        @peripheral.removeAllListeners
         @emit 'close'
 
+    @once 'open', ->
+      noble.stopScanning()
+
+  connect: () ->
+    if noble.state is 'poweredOn'
+      debug 'Start scanning again'
+      noble.startScanning()
     @once 'open', ->
       noble.stopScanning()
 
