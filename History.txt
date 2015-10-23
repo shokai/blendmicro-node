@@ -1,3 +1,7 @@
+=== 0.2.0 2015-10-24
+
+* implemented auto re-connect  #4 #5
+
 === 0.1.2 2015-07-29
 
 * fixed for Mac OSX Yosemite
