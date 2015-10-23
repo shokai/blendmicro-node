@@ -5,15 +5,14 @@ var bm = new BlendMicro("BlendMicro");
 
 bm.on('open', function(){
   console.log("open!!");
+});
 
-  // read data
-  bm.on("data", function(data){
-    console.log(data.toString());
-    bm.updateRssi(function(err, rssi){
-      console.log("rssi:"+rssi);
-    });
+// read data
+bm.on("data", function(data){
+  console.log(data.toString());
+  bm.updateRssi(function(err, rssi){
+    console.log("rssi:"+rssi);
   });
-
 });
 
 bm.on('close', function(){

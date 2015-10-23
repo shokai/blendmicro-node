@@ -16,12 +16,13 @@ sites
 Install
 -------
 
-    % npm install blendmicro
+    % npm i blendmicro
 
 
 BLE Terminal
 ------------
 
+    % npm i blendmicro coffee-script -g
     % blendmicro -help
     % blendmicro -list
     % blendmicro -term [DEVICE_NAME]
@@ -61,18 +62,18 @@ var bm = new BlendMicro("BlendMicro");
 
 // search with deefault name "BlendMicro"
 var bm = new BlendMicro();
+
+bm.on('open', function(){
+  console.log("open!!");
+});
 ```
 
 
 ### Read
 
 ```javascript
-bm.on('open', function(){
-  console.log("open!!");
-
-  bm.on("data", function(data){
-    console.log(data.toString());
-  });
+bm.on("data", function(data){
+  console.log(data.toString());
 });
 ```
 
@@ -92,6 +93,11 @@ bm.close(function(){
 });
 ```
 
+### Auto re-connection
+
+```javascript
+bm.reconnect = false // default is "true" (enabled)
+```
 
 Contributing
 ------------

@@ -3,27 +3,35 @@ noble  = require 'noble'
 _      = require 'lodash'
 debug  = require('debug')('blendmicro')
 
+UUID_LIST =
+  service: "713d0000-503e-4c75-ba94-3148f18d941e".replace(/\-/g, '')
+  tx:      "713d0003-503e-4c75-ba94-3148f18d941e".replace(/\-/g, '')
+  rx:      "713d0002-503e-4c75-ba94-3148f18d941e".replace(/\-/g, '')
+
 module.exports = class BlendMicro extends events.EventEmitter2
 
-  UUID_LIST =
-    service: "713d0000-503e-4c75-ba94-3148f18d941e".replace(/\-/g, '')
-    tx:      "713d0003-503e-4c75-ba94-3148f18d941e".replace(/\-/g, '')
-    rx:      "713d0002-503e-4c75-ba94-3148f18d941e".replace(/\-/g, '')
-
   constructor: (@name = 'BlendMicro') ->
+    @peripheral = null
+    @reconnect = true
 
     @__defineGetter__ 'state', =>
       @peripheral?.state or 'discover'
 
+    @open @name
+
+  open: (@name) ->
+    return if @peripheral isnt null
+
     noble.on 'stateChange', (state) ->
       if state is 'poweredOn'
+        debug 'start scanning'
         noble.startScanning()
       else
         noble.stopScanning()
 
     noble.on 'discover', (peripheral) =>
-      if peripheral.advertisement.localName isnt @name
-        return
+      return if @peripheral isnt null
+      return if peripheral.advertisement.localName isnt @name
       @peripheral = peripheral
       debug 'found peripheral'
 
@@ -63,13 +71,23 @@ module.exports = class BlendMicro extends events.EventEmitter2
                 debug err if err
 
       @peripheral.on 'disconnect', =>
+        debug 'disconnect'
+        @peripheral.removeAllListeners()
+        @peripheral = null
+        if @reconnect
+          debug 're-start scanning'
+          noble.startScanning()
         @emit 'close'
 
-    @once 'open', ->
+    @on 'open', ->
       noble.stopScanning()
 
   close: (callback) ->
-    @peripheral.disconnect callback
+    @peripheral.removeAllListeners()
+    @peripheral.disconnect =>
+      callback()
+      @emit 'close'
+    @peripheral = null
 
   write: (data) ->
     return unless @tx
