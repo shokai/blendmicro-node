@@ -22,11 +22,16 @@ module.exports = class BlendMicro extends events.EventEmitter2
   open: (@name) ->
     return if @peripheral isnt null
 
+    if noble.state is 'poweredOn'
+      debug 'start scanning'
+      noble.startScanning()
+
     noble.on 'stateChange', (state) ->
       if state is 'poweredOn'
         debug 'start scanning'
         noble.startScanning()
       else
+        debug 'stop scanning'
         noble.stopScanning()
 
     noble.on 'discover', (peripheral) =>
@@ -83,9 +88,11 @@ module.exports = class BlendMicro extends events.EventEmitter2
         @emit 'close'
 
     @on 'open', ->
+      debug 'stop scanning'
       noble.stopScanning()
 
   close: (callback) ->
+    noble.removeAllListeners()
     @peripheral.removeAllListeners()
     @peripheral.disconnect =>
       callback?()
