@@ -1,5 +1,5 @@
 events = require 'eventemitter2'
-noble  = require 'noble'
+ble    = require './ble'
 _      = require 'lodash'
 debug  = require('debug')('blendmicro')
 
@@ -22,19 +22,16 @@ module.exports = class BlendMicro extends events.EventEmitter2
   open: (@name) ->
     return if @peripheral isnt null
 
-    if noble.state is 'poweredOn'
-      debug 'start scanning'
-      noble.startScanning()
+    if ble.state is 'poweredOn'
+      ble.startScanning()
 
-    noble.on 'stateChange', (state) ->
+    ble.noble.on 'stateChange', (state) ->
       if state is 'poweredOn'
-        debug 'start scanning'
-        noble.startScanning()
+        ble.startScanning()
       else
-        debug 'stop scanning'
-        noble.stopScanning()
+        ble.stopScanning()
 
-    noble.on 'discover', (peripheral) =>
+    ble.noble.on 'discover', (peripheral) =>
       return if @peripheral isnt null
       return if peripheral.advertisement.localName isnt @name
       @peripheral = peripheral
@@ -84,15 +81,14 @@ module.exports = class BlendMicro extends events.EventEmitter2
         @peripheral = null
         if @reconnect
           debug 're-start scanning'
-          noble.startScanning()
+          ble.startScanning()
         @emit 'close'
 
     @on 'open', ->
-      debug 'stop scanning'
-      noble.stopScanning()
+      ble.stopScanning()
 
   close: (callback) ->
-    noble.removeAllListeners()
+    ble.noble.removeAllListeners()
     @peripheral.removeAllListeners()
     @peripheral.disconnect =>
       callback?()
