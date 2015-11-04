@@ -12,6 +12,7 @@ sites
 - https://www.npmjs.org/package/blendmicro
 - https://github.com/shokai/blendmicro-node
 
+[![Circle CI](https://circleci.com/gh/shokai/blendmicro-node.svg?style=svg)](https://circleci.com/gh/shokai/blendmicro-node)
 
 Install
 -------
