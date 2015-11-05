@@ -1,8 +1,8 @@
 BlendMicro npm
 ==============
-Node.js module for [BlendMicro](http://redbearlab.com/blendmicro/) with BLE.
+Node.js module for [BlendMicro](http://redbearlab.com/blendmicro/) and [BLENano](http://redbearlab.com/blenano) with BLE.
 
-    Node.js <---(BLE)---> BlendMicro
+    Node.js <---(BLE)---> BlendMicro/BLENano
 
 - using [noble npm](http://npmjs.org/package/noble) as BLE wrapper
 - [serialport npm](https://www.npmjs.org/package/serialport) like API

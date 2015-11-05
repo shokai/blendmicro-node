@@ -2,7 +2,7 @@
   "name": "blendmicro",
   "private": false,
   "version": "0.2.3",
-  "description": "BlendMicro Node Lib",
+  "description": "BlendMicro/BLENano Node Lib",
   "main": "lib/blendmicro.js",
   "scripts": {
     "build": "grunt build",
@@ -16,7 +16,8 @@
     "Arduino",
     "Bluetooth",
     "BLE",
-    "BlendMicro"
+    "BlendMicro",
+    "BLENano"
   ],
   "author": "Sho Hashimoto <hashimoto@shokai.org>",
   "license": "MIT",
