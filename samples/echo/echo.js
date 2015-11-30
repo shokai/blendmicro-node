@@ -1,7 +1,7 @@
 var BlendMicro = require(__dirname+'/../../');
 // var BlendMicro = require('blendmicro');
 
-var bm = new BlendMicro("BlendMicro");
+var bm = new BlendMicro(process.argv[2] || "BlendMicro");
 
 bm.on('open', function(){
   console.log("open!!");

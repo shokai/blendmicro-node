@@ -52,6 +52,7 @@ void setup(){
   ble_begin();
 }
 ```
+if you are using BLE Nano, see `samples/` directory.
 
 node.js side
 

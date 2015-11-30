@@ -36,7 +36,7 @@ void loop()
       ble_write(recv_data); // echo data
     }
   }
- 
+
   delay(100);
 }
 

@@ -4,9 +4,14 @@ _      = require 'lodash'
 debug  = require('debug')('blendmicro')
 
 UUID_LIST =
-  service: "713d0000-503e-4c75-ba94-3148f18d941e".replace(/\-/g, '')
-  tx:      "713d0003-503e-4c75-ba94-3148f18d941e".replace(/\-/g, '')
-  rx:      "713d0002-503e-4c75-ba94-3148f18d941e".replace(/\-/g, '')
+  blendmicro:
+    service: "713d0000-503e-4c75-ba94-3148f18d941e".replace(/\-/g, '')
+    tx:      "713d0003-503e-4c75-ba94-3148f18d941e".replace(/\-/g, '')
+    rx:      "713d0002-503e-4c75-ba94-3148f18d941e".replace(/\-/g, '')
+  mbed_uart:
+    service: "6e400001-b5a3-f393-e0a9-e50e24dcca9e".replace(/\-/g, '')
+    tx:      "6e400002-b5a3-f393-e0a9-e50e24dcca9e".replace(/\-/g, '')
+    rx:      "6e400003-b5a3-f393-e0a9-e50e24dcca9e".replace(/\-/g, '')
 
 module.exports = class BlendMicro extends events.EventEmitter2
 
@@ -21,6 +26,7 @@ module.exports = class BlendMicro extends events.EventEmitter2
 
   open: (@name) ->
     return if @peripheral isnt null
+    debug "search \"#{@name}\""
 
     if ble.state is 'poweredOn'
       ble.startScanning()
@@ -35,7 +41,7 @@ module.exports = class BlendMicro extends events.EventEmitter2
       return if @peripheral isnt null
       return if peripheral.advertisement.localName isnt @name
       @peripheral = peripheral
-      debug 'found peripheral'
+      debug "found peripheral \"#{@name}\""
 
       @peripheral.connect =>
 
@@ -60,13 +66,18 @@ module.exports = class BlendMicro extends events.EventEmitter2
 
         ## find RX/TX characteristics
         @peripheral.discoverServices [], (err, services) =>
+          device_type = null
           service = _.find services, (service) ->
-            service.uuid is UUID_LIST.service
+            for type, uuids of UUID_LIST
+              if service.uuid is uuids.service
+                device_type = type
+                return true
+          return unless service
           service.discoverCharacteristics [], (err, chars) =>
-            @tx = _.find chars, (char) -> char.uuid is UUID_LIST.tx
+            @tx = _.find chars, (char) -> char.uuid is UUID_LIST[device_type].tx
             unless @tx
               debug 'ERROR: TX characteristics not found'
-            rx = _.find chars, (char) ->  char.uuid is UUID_LIST.rx
+            rx = _.find chars, (char) ->  char.uuid is UUID_LIST[device_type].rx
             unless rx
               debug 'ERROR: RX characteristics not found'
             else
