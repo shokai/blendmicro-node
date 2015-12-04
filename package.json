@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "coffee-script": "*",
+    "coffeelint": "^1.14.1",
     "debug": "*",
     "eventemitter2": "*",
     "lodash": "*",
