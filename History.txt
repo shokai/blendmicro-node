@@ -1,3 +1,9 @@
+=== 0.3.0 2015-12-5
+
+* add BLENano samples  #7
+* support mbed UARTService.h  #7
+* write 20byte/1packet, 30msec interval  #8
+
 === 0.2.4 2015-11-5
 
 * added BLENano
