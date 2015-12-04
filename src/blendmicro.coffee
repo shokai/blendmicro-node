@@ -18,6 +18,9 @@ module.exports = class BlendMicro extends events.EventEmitter2
   constructor: (@name = 'BlendMicro') ->
     @peripheral = null
     @reconnect = true
+    @write_queue = []
+    @writeInterval = 100  # msec
+    @writePacketSize = 20 # bytes
 
     @__defineGetter__ 'state', =>
       @peripheral?.state or 'discover'
@@ -106,11 +109,28 @@ module.exports = class BlendMicro extends events.EventEmitter2
       @emit 'close'
     @peripheral = null
 
-  write: (data) ->
-    return unless @tx
+  write: (data, callback) ->
+    unless @peripheral and @tx
+      return callback 'disconnected'
     unless data instanceof Buffer
       data = new Buffer data
-    @tx.write data
+
+    ## queue
+    packet_num = Math.floor((data.length-1)/@writePacketSize) + 1
+    debug "write #{data.length}bytes #{packet_num}packets"
+    for i in [0...packet_num]
+      start_at = i*@writePacketSize
+      @write_queue.push data.slice start_at, start_at+@writePacketSize
+
+    return if @write_interval_id
+    @write_interval_id = setInterval =>
+      if @write_queue.length > 0 and @peripheral
+        @tx.write @write_queue.shift()
+      else
+        clearInterval @write_interval_id
+        @write_interval_id = null
+        @write_queue = []
+    , @writeInterval
 
   updateRssi: (callback) ->
     @peripheral?.updateRssi callback

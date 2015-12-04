@@ -71,6 +71,5 @@ parser.on 'term', (opt, device_name) ->
     line = chunk.toString().replace /[\r\n]/g, ''
     bm.write line
 
-
 parser.parse process.argv
 
