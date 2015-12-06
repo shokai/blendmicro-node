@@ -111,7 +111,7 @@ module.exports = class BlendMicro extends events.EventEmitter2
 
   write: (data, callback) ->
     unless @peripheral and @tx
-      return callback 'disconnected'
+      return callback? 'disconnected'
     unless data instanceof Buffer
       data = new Buffer data
 
