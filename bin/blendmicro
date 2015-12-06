@@ -33,6 +33,7 @@ parser.on 'list', ->
   noble = require 'noble'
   noble.on 'discover', (peripheral) ->
     console.log peripheral.advertisement.localName
+    console.log "  UUID\t#{peripheral.uuid}"
     for k,v of peripheral.advertisement
       console.log "  #{k}\t#{util.inspect v}"
 
