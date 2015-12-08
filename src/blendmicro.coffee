@@ -1,7 +1,10 @@
 events = require 'eventemitter2'
-ble    = require './ble'
 _      = require 'lodash'
 debug  = require('debug')('blendmicro')
+
+BLE = require './ble'
+ble = new BLE
+ble.setMaxListeners 16
 
 UUID_LIST =
   blendmicro:

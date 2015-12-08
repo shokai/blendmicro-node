@@ -1,17 +1,26 @@
 noble = require 'noble'
 debug = require('debug')('blendmicro:ble')
+{EventEmitter2} = require 'eventemitter2'
 
+module.exports = class BLE extends EventEmitter2
 
-ble =
+  constructor: ->
+    debug 'start ble class'
+    @noble = noble
+    @scanCount = 0
+    attrs = [ 'state' ]
 
-  noble: noble
+    for attr in attrs
+      do (attr) =>
+        @__defineGetter__ attr, ->
+          return noble[attr]
 
   startScanning: ->
     @scanCount += 1
     debug "scan count: #{@scanCount}"
     if @scanCount is 1
       debug "start scanning"
-      noble.startScanning()
+      noble.startScanning [], true
 
   stopScanning: ->
     @scanCount -= 1
@@ -19,16 +28,3 @@ ble =
     if @scanCount is 0
       debug "stop scanning"
       noble.stopScanning()
-
-ble.scanCount = 0
-
-attrs = [
-  'state'
-]
-
-for attr in attrs
-  do (attr) ->
-    ble.__defineGetter__ attr, ->
-      return noble[attr]
-
-module.exports = ble
