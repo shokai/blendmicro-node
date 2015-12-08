@@ -1,3 +1,7 @@
+=== 0.3.1 2015-12-8
+
+* fixed re-connecting for BLENano  #9
+
 === 0.3.0 2015-12-5
 
 * add BLENano samples  #7
