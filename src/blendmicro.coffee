@@ -6,6 +6,8 @@ BLE = require './ble'
 ble = new BLE
 ble.setMaxListeners 16
 
+STATE = require './state'
+
 UUID_LIST =
   blendmicro:
     service: "713d0000-503e-4c75-ba94-3148f18d941e".replace(/\-/g, '')
@@ -24,33 +26,26 @@ module.exports = class BlendMicro extends events.EventEmitter2
     @write_queue = []
     @writeInterval = 100  # msec
     @writePacketSize = 20 # bytes
-
-    @__defineGetter__ 'state', =>
-      @peripheral?.state or 'discover'
+    @state = STATE.CLOSE
 
     @open @name
 
   open: (@name) ->
-    return if @peripheral isnt null
-    debug "search \"#{@name}\""
+    return if @state isnt STATE.CLOSE
+    debug "start scanning \"#{@name}\""
 
-    if ble.state is 'poweredOn'
-      ble.startScanning()
+    @state = STATE.SCAN
+    ble.open this
+    ble.startScanning()
 
-    ble.noble.on 'stateChange', (state) ->
-      if state is 'poweredOn'
-        ble.startScanning()
-      else
-        ble.stopScanning()
-
-    ble.noble.on 'discover', (peripheral) =>
+    @on 'discover', (peripheral) =>
       debug "discover \"#{peripheral.advertisement.localName}\""
-      return if @peripheral isnt null
+      return if @state isnt STATE.SCAN
       return if peripheral.advertisement.localName isnt @name
-      @peripheral = peripheral
       debug "found peripheral \"#{@name}\""
+      @state = STATE.CHECK
 
-      @peripheral.connect =>
+      peripheral.connect =>
 
         ## trap SIGNALs
         for signal in ['SIGINT', 'SIGHUP', 'SIGTERM']
@@ -61,7 +56,7 @@ module.exports = class BlendMicro extends events.EventEmitter2
             if @peripheral.state is 'disconnected'
               process.exit 1
               return
-            @peripheral?.disconnect ->
+            @peripheral.disconnect ->
               process.exit 1
             setTimeout ->
               debug 'peripheral.disconnect timeout (2000 msec)'
@@ -69,10 +64,9 @@ module.exports = class BlendMicro extends events.EventEmitter2
             , 2000
 
         debug 'connect peripheral'
-        @emit 'open'
 
         ## find RX/TX characteristics
-        @peripheral.discoverServices [], (err, services) =>
+        peripheral.discoverServices [], (err, services) =>
           device_type = null
           service = _.find services, (service) ->
             for type, uuids of UUID_LIST
@@ -83,39 +77,52 @@ module.exports = class BlendMicro extends events.EventEmitter2
           service.discoverCharacteristics [], (err, chars) =>
             @tx = _.find chars, (char) -> char.uuid is UUID_LIST[device_type].tx
             unless @tx
-              debug 'ERROR: TX characteristics not found'
-            rx = _.find chars, (char) ->  char.uuid is UUID_LIST[device_type].rx
-            unless rx
-              debug 'ERROR: RX characteristics not found'
-            else
-              rx.on 'read', (data) =>
-                @emit 'data', data
-              rx.notify true, (err) =>
-                debug err if err
+              @state = STATE.SCAN
+              return debug 'ERROR: TX characteristics not found'
+            @rx = _.find chars, (char) ->  char.uuid is UUID_LIST[device_type].rx
+            unless @rx
+              @state = STATE.SCAN
+              return debug 'ERROR: RX characteristics not found'
 
-      @peripheral.on 'disconnect', =>
+            @rx.on 'read', (data) =>
+              @emit 'data', data
+            @rx.notify true, (err) =>
+              debug err if err
+            @peripheral = peripheral
+            @state = STATE.OPEN
+            @emit 'open'
+
+
+      ## disconnected by Peripheral or Network condition
+      peripheral.on 'disconnect', =>
         debug 'disconnect'
-        @peripheral.removeAllListeners()
+        peripheral.removeAllListeners()
         @peripheral = null
-        if @reconnect
-          debug 're-start scanning'
-          ble.startScanning()
         @emit 'close'
+        if @reconnect
+          debug "re-start scanning \"#{@name}\""
+          @state = STATE.SCAN
+          ble.startScanning()
+        else
+          @state = STATE.CLOSE
 
-    @on 'open', ->
+    @on 'open', =>
+      @state = STATE.OPEN
       ble.stopScanning()
 
+  ## disconnected by User
   close: (callback) ->
-    ble.noble.removeAllListeners()
+    @state = STATE.CLOSE
+    ble.close this
     @peripheral.removeAllListeners()
     @peripheral.disconnect =>
-      callback?()
+      callback? null
       @emit 'close'
     @peripheral = null
 
   write: (data, callback) ->
-    unless @peripheral and @tx
-      return callback? 'disconnected'
+    if @state isnt STATE.OPEN
+      return callback? @state
     unless data instanceof Buffer
       data = new Buffer data
 
@@ -137,4 +144,6 @@ module.exports = class BlendMicro extends events.EventEmitter2
     , @writeInterval
 
   updateRssi: (callback) ->
-    @peripheral?.updateRssi callback
+    if @state isnt STATE.OPEN
+      return callback? @state
+    @peripheral.updateRssi callback
