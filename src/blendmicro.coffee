@@ -41,6 +41,7 @@ module.exports = class BlendMicro extends events.EventEmitter2
         ble.stopScanning()
 
     ble.noble.on 'discover', (peripheral) =>
+      debug "discover \"#{peripheral.advertisement.localName}\""
       return if @peripheral isnt null
       return if peripheral.advertisement.localName isnt @name
       @peripheral = peripheral
