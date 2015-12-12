@@ -81,7 +81,7 @@ module.exports = class BlendMicro extends events.EventEmitter2
             unless @tx
               @state = STATE.SCAN
               return debug 'ERROR: TX characteristics not found'
-            @rx = _.find chars, (char) ->  char.uuid is UUID_LIST[device_type].rx
+            @rx = _.find chars, (char) -> char.uuid is UUID_LIST[device_type].rx
             unless @rx
               @state = STATE.SCAN
               return debug 'ERROR: RX characteristics not found'
