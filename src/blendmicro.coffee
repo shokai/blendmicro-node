@@ -73,7 +73,9 @@ module.exports = class BlendMicro extends events.EventEmitter2
               if service.uuid is uuids.service
                 device_type = type
                 return true
-          return unless service
+          unless service
+            @state = STATE.SCAN
+            return debug 'ERROR: Service not found'
           service.discoverCharacteristics [], (err, chars) =>
             @tx = _.find chars, (char) -> char.uuid is UUID_LIST[device_type].tx
             unless @tx
